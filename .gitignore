@@ -1,0 +1,36 @@
+# Unityが自動生成するフォルダー
+/[Ll]ibrary/
+/[Tt]emp/
+/[Oo]bj/
+/[Ll]ogs/
+/[Mm]emoryCaptures/
+/[Rr]ecordings/
+/UserSettings/
+
+# ゲームの出力先
+/[Bb]uild/
+/[Bb]uilds/
+
+# Visual Studioなどが自動生成するファイル
+/.vs/
+/.vscode/
+/.idea/
+
+*.csproj
+*.sln
+*.suo
+*.tmp
+*.user
+*.userprefs
+*.pidb
+*.booproj
+*.svd
+*.pdb
+*.mdb
+*.opendb
+*.VC.db
+
+# OSが自動生成するファイル
+.DS_Store
+Thumbs.db
+Desktop.ini
