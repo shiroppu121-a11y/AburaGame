@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
+using TMPro;
 
 public class Cup : MonoBehaviour
 {
@@ -12,6 +13,12 @@ public class Cup : MonoBehaviour
 
     [SerializeField]
     private float currentLiters = 0.5f;
+
+    [SerializeField]
+    private TMP_Text currentLitersText;
+
+    [SerializeField]
+    private Vector3 defaultPosition;
 
     public float CapacityLiters => capacityLiters;
     public float CurrentLiters => currentLiters;
@@ -27,6 +34,8 @@ public class Cup : MonoBehaviour
                 "Main Cameraが見つかりません。CameraのTagを確認してください。"
             );
         }
+
+        defaultPosition = transform.position;
     }
 
     private void Update()
@@ -50,6 +59,8 @@ public class Cup : MonoBehaviour
         {
             StopDragging();
         }
+
+        currentLitersText.text = currentLiters.ToString("F2") + " L";
     }
 
     private void StartDragging()
@@ -114,6 +125,8 @@ public class Cup : MonoBehaviour
         {
             Debug.Log("移動先のコップがありません");
         }
+
+        transform.position = defaultPosition;
 
         Debug.Log("ドラッグ終了");
     }
