@@ -7,6 +7,10 @@ public class Cup : MonoBehaviour
     private Camera mainCamera;
     private bool isDragging;
     private Vector3 dragOffset;
+    public bool CanDrag { get; set; } = true;
+
+    [SerializeField]
+    private SoundManager soundManager;
 
     [SerializeField]
     private float capacityLiters = 1.0f;
@@ -19,6 +23,9 @@ public class Cup : MonoBehaviour
 
     [SerializeField]
     private Vector3 defaultPosition;
+
+    [SerializeField]
+    private AnimationStateController animationStateController;
 
     public float CapacityLiters => capacityLiters;
     public float CurrentLiters => currentLiters;
@@ -38,8 +45,18 @@ public class Cup : MonoBehaviour
         defaultPosition = transform.position;
     }
 
+    private void Start()
+    {
+        UpdateLiquidAnimation();
+    }
+
     private void Update()
     {
+        if(!CanDrag)
+        {
+            return;
+        }
+
         if (mainCamera == null || Mouse.current == null)
         {
             return;
@@ -193,6 +210,9 @@ public class Cup : MonoBehaviour
 
         currentLiters -= transferableAmount;
         targetCup.currentLiters += transferableAmount;
+        UpdateLiquidAnimation();
+        targetCup.UpdateLiquidAnimation();
+        soundManager.PlayPourSE();
 
         Debug.Log(
             transferableAmount + "LˆÚ‚µ‚Ü‚µ‚½"
@@ -225,5 +245,17 @@ public class Cup : MonoBehaviour
             0f,
             capacityLiters
         );
+    }
+
+    private void UpdateLiquidAnimation()
+    {
+        if (animationStateController == null)
+        {
+            return;
+        }
+
+        int stateNumber = Mathf.Clamp(Mathf.RoundToInt(currentLiters),0,8);
+
+        animationStateController.ChangeState(stateNumber);
     }
 }
