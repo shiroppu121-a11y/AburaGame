@@ -28,6 +28,9 @@ public class SoundManager : MonoBehaviour
     [SerializeField]
     private AudioClip hintSE;
 
+    [SerializeField]
+    private AudioClip allClearSE;
+
     private void Awake()
     {
         if (bgmSource == null)
@@ -82,6 +85,11 @@ public class SoundManager : MonoBehaviour
     public void PlayHintSE()
     {
         PlaySE(hintSE);
+    }
+
+    public void PlayAllClearSE()
+    {
+        PlaySE(allClearSE);
     }
 
     private void PlaySE(AudioClip audioClip)

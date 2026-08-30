@@ -32,6 +32,9 @@ public class MainManager : MonoBehaviour
     [SerializeField]
     private GameObject hintPanel;
 
+    [SerializeField]
+    private GameObject allClearPanel;
+
     [Header("âπê∫")]
 
     [SerializeField]
@@ -54,7 +57,7 @@ public class MainManager : MonoBehaviour
     private string nextSceneName;
 
     [SerializeField]
-    private float sceneChangeDelay = 2.0f;
+    private float sceneChangeDelay = 0.2f;
 
     private float remainingTime;
 
@@ -77,7 +80,7 @@ public class MainManager : MonoBehaviour
             stageClearUI.SetActive(false);
         }
 
-        if (introPanel != null)
+        if (introPanel != null && nextSceneName == "SecondStage")
         {
             introPanel.SetActive(true);
         }
@@ -240,7 +243,14 @@ public class MainManager : MonoBehaviour
             }
         }
 
-        StageClear();
+        if (string.IsNullOrEmpty(nextSceneName))
+        {
+            AllClear();
+        }
+        else
+        {
+            StageClear();
+        }
     }
 
     private void StageClear()
@@ -309,6 +319,34 @@ public class MainManager : MonoBehaviour
         );
 
         SceneManager.LoadScene(nextSceneName);
+    }
+
+    private void AllClear()
+    {
+        if (isStageCleared)
+        {
+            return;
+        }
+
+        isStageCleared = true;
+
+        SetCupOperationEnabled(false);
+
+        if (allClearPanel != null)
+        {
+            allClearPanel.SetActive(true);
+        }
+
+        if (soundManager != null)
+        {
+            soundManager.StopBGM();
+            soundManager.StopSE();
+            soundManager.PlayStageClearSE();
+        }
+
+        soundManager.PlayAllClearSE();
+
+        Debug.Log("All Clear!");
     }
 
     public void Restart()

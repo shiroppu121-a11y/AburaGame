@@ -280,13 +280,15 @@ RectTransform:
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
-  m_Children: []
+  m_Children:
+  - {fileID: 1499217474}
+  - {fileID: 1748227429}
   m_Father: {fileID: 1270046793}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 301.08377, y: 192.14384}
-  m_SizeDelta: {x: 805.4215, y: 498.0598}
+  m_AnchoredPosition: {x: 298.0408, y: 192.14386}
+  m_SizeDelta: {x: 706.0189, y: 420.9719}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &153310088
 MonoBehaviour:
@@ -301,7 +303,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 0.84313726}
+  m_Color: {r: 1, g: 1, b: 1, a: 0.9411765}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -2955,8 +2957,6 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 153310087}
-  - {fileID: 1499217474}
-  - {fileID: 1748227429}
   m_Father: {fileID: 1282479456}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1282479452
@@ -3855,11 +3855,11 @@ RectTransform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 1270046793}
+  m_Father: {fileID: 153310087}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 350, y: 182}
+  m_AnchoredPosition: {x: 48.91626, y: -10.14386}
   m_SizeDelta: {x: 200, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1499217475
@@ -4474,11 +4474,11 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 447915165}
-  m_Father: {fileID: 1270046793}
+  m_Father: {fileID: 153310087}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 308.22504, y: 56.217316}
+  m_AnchoredPosition: {x: 7.1412964, y: -135.92651}
   m_SizeDelta: {x: 160, y: 30}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1748227430
@@ -4716,6 +4716,7 @@ MonoBehaviour:
   stageClearUI: {fileID: 1270046792}
   introPanel: {fileID: 558768794}
   hintPanel: {fileID: 664754021}
+  allClearPanel: {fileID: 0}
   soundManager: {fileID: 1461796741}
   cups:
   - {fileID: 231761966}
