@@ -714,8 +714,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Cup
   soundManager: {fileID: 1461796741}
-  capacityLiters: 6
-  currentLiters: 6
+  capacityLiters: 7
+  currentLiters: 7
   currentLitersText: {fileID: 2069297972}
   defaultPosition: {x: 0, y: 0, z: 0}
   animationStateController: {fileID: 848403359}
@@ -1021,7 +1021,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 47, y: 82}
+  m_AnchoredPosition: {x: 47, y: 105}
   m_SizeDelta: {x: 200, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &422768734
@@ -1072,7 +1072,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Cup
   soundManager: {fileID: 1461796741}
-  capacityLiters: 4
+  capacityLiters: 5
   currentLiters: 0
   currentLitersText: {fileID: 360179669}
   defaultPosition: {x: 0, y: 0, z: 0}
@@ -2191,7 +2191,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 298, y: 82.000015}
+  m_AnchoredPosition: {x: 298, y: 105.00002}
   m_SizeDelta: {x: 200, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &838131533
@@ -2762,7 +2762,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_Sprite: {fileID: 21300000, guid: 97a742fccbf12d9449e1c1ce9caac1f0, type: 3}
+  m_Sprite: {fileID: 21300000, guid: c604fcc21bfa93243b22261793a9f284, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -3224,7 +3224,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_Sprite: {fileID: 21300000, guid: 73cd9a86c5760bb498e0b8d5bc80673c, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 3f8e8f08d38c2f7458bc2ccf806a1b57, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -3261,8 +3261,8 @@ Transform:
   m_GameObject: {fileID: 1319668342}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -11.08, y: 0.3, z: 0}
-  m_LocalScale: {x: 0.36032957, y: 0.6270197, z: 1}
+  m_LocalPosition: {x: -11.08, y: 0.45, z: 0}
+  m_LocalScale: {x: 0.36032957, y: 0.6975594, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 231761965}
@@ -3382,7 +3382,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "\u3059\u3079\u3066\u306E\u30B3\u30C3\u30D7\u306B\u9EA6\u8336\u3092\u5206\u3051\u3088\u3046\uFF01"
+  m_text: "1\u30EA\u30C3\u30C8\u30EB\u3092\u91CF\u308A\u305F\u3044\uFF01\uFF01"
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 6e4a38987d2dd964386e33ac10ba19b0, type: 2}
   m_sharedMaterial: {fileID: 7806865146238942468, guid: 6e4a38987d2dd964386e33ac10ba19b0, type: 2}
@@ -3416,7 +3416,7 @@ MonoBehaviour:
   m_fontSizeMin: 18
   m_fontSizeMax: 72
   m_fontStyle: 0
-  m_HorizontalAlignment: 1
+  m_HorizontalAlignment: 2
   m_VerticalAlignment: 256
   m_textAlignment: 65535
   m_characterSpacing: 0
@@ -3825,6 +3825,7 @@ MonoBehaviour:
   stageClearSE: {fileID: 8300000, guid: b66b3dd79ba285c4a9c0cd5b6583c832, type: 3}
   drinkSE: {fileID: 8300000, guid: 8f63afe19bfa459428458151f09a8898, type: 3}
   hintSE: {fileID: 8300000, guid: 896d8b49b7b330c438c160f7d63556a0, type: 3}
+  allClearSE: {fileID: 0}
 --- !u!1 &1499217473
 GameObject:
   m_ObjectHideFlags: 0
@@ -4169,7 +4170,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_Sprite: {fileID: 21300000, guid: 6a9d067006d2bd741b497d312d51806e, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 3959af9ae8ca98247a83b1a8e576706f, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -4716,6 +4717,7 @@ MonoBehaviour:
   stageClearUI: {fileID: 1270046792}
   introPanel: {fileID: 558768794}
   hintPanel: {fileID: 664754021}
+  hintButton: {fileID: 64862727}
   allClearPanel: {fileID: 0}
   soundManager: {fileID: 1461796741}
   cups:
@@ -4723,8 +4725,8 @@ MonoBehaviour:
   - {fileID: 422768736}
   - {fileID: 1960082671}
   targetLiquids:
-  - 2
-  - 2
+  - 4
+  - 1
   - 2
   tolerance: 0.01
   nextSceneName: FourthStage
@@ -5138,7 +5140,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -203, y: 85.999985}
+  m_AnchoredPosition: {x: -203, y: 108.99999}
   m_SizeDelta: {x: 200, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &2111174177

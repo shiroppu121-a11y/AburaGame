@@ -33,6 +33,9 @@ public class MainManager : MonoBehaviour
     private GameObject hintPanel;
 
     [SerializeField]
+    private GameObject hintButton;
+
+    [SerializeField]
     private GameObject allClearPanel;
 
     [Header("‰¹º")]
@@ -219,8 +222,7 @@ public class MainManager : MonoBehaviour
             return;
         }
 
-        if (cups.Length == 0 ||
-            cups.Length != targetLiquids.Length)
+        if (cups.Length == 0 || cups.Length != targetLiquids.Length)
         {
             return;
         }
@@ -232,10 +234,7 @@ public class MainManager : MonoBehaviour
                 return;
             }
 
-            float difference = Mathf.Abs(
-                cups[i].CurrentLiters -
-                targetLiquids[i]
-            );
+            float difference = Mathf.Abs(cups[i].CurrentLiters - targetLiquids[i]);
 
             if (difference > tolerance)
             {
@@ -246,10 +245,12 @@ public class MainManager : MonoBehaviour
         if (string.IsNullOrEmpty(nextSceneName))
         {
             AllClear();
+            HideHint();
         }
         else
         {
             StageClear();
+            HideHint();
         }
     }
 
@@ -349,6 +350,11 @@ public class MainManager : MonoBehaviour
         Debug.Log("All Clear!");
     }
 
+    public void BackTitle()
+    {
+        SceneManager.LoadScene("FirstStage");
+    }
+
     public void Restart()
     {
         SceneManager.LoadScene(SceneManager.GetActiveScene().name);
@@ -400,5 +406,13 @@ public class MainManager : MonoBehaviour
     public void CloseHint()
     {
         hintPanel.SetActive(false);
+    }
+
+    private void HideHint()
+    {
+        if (hintButton != null)
+        {
+            hintButton.SetActive(false);
+        }
     }
 }

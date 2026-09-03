@@ -3825,6 +3825,7 @@ MonoBehaviour:
   stageClearSE: {fileID: 8300000, guid: b66b3dd79ba285c4a9c0cd5b6583c832, type: 3}
   drinkSE: {fileID: 8300000, guid: 8f63afe19bfa459428458151f09a8898, type: 3}
   hintSE: {fileID: 8300000, guid: 896d8b49b7b330c438c160f7d63556a0, type: 3}
+  allClearSE: {fileID: 0}
 --- !u!1 &1499217473
 GameObject:
   m_ObjectHideFlags: 0
@@ -4716,6 +4717,7 @@ MonoBehaviour:
   stageClearUI: {fileID: 1270046792}
   introPanel: {fileID: 558768794}
   hintPanel: {fileID: 664754021}
+  hintButton: {fileID: 64862727}
   allClearPanel: {fileID: 0}
   soundManager: {fileID: 1461796741}
   cups:
