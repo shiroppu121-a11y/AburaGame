@@ -16,7 +16,8 @@ public class AnimationStateController : MonoBehaviour
         "5LCup",
         "6LCup",
         "7LCup",
-        "8LCup"
+        "8LCup",
+        "10LCup"
     };
 
     private void Awake()
