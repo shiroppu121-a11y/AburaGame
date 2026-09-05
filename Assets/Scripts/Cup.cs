@@ -1,16 +1,22 @@
+using TMPro;
 using UnityEngine;
 using UnityEngine.InputSystem;
-using TMPro;
 
 public class Cup : MonoBehaviour
 {
     private Camera mainCamera;
     private bool isDragging;
     private Vector3 dragOffset;
+    private Vector3 defaultPosition;
+
     public bool CanDrag { get; set; } = true;
+
+    [Header("音声")]
 
     [SerializeField]
     private SoundManager soundManager;
+
+    [Header("コップの容量")]
 
     [SerializeField]
     private float capacityLiters = 1.0f;
@@ -18,79 +24,110 @@ public class Cup : MonoBehaviour
     [SerializeField]
     private float currentLiters = 0.5f;
 
+    [Header("残量表示")]
+
     [SerializeField]
     private TMP_Text currentLitersText;
 
-    [SerializeField]
-    private Vector3 defaultPosition;
+    [Header("液体アニメーション")]
 
     [SerializeField]
     private AnimationStateController animationStateController;
 
     public float CapacityLiters => capacityLiters;
+
     public float CurrentLiters => currentLiters;
-    public float FreeSpaceLiters => capacityLiters - currentLiters;
+
+    public float FreeSpaceLiters =>
+        capacityLiters - currentLiters;
 
     private void Awake()
     {
         mainCamera = Camera.main;
+        defaultPosition = transform.position;
 
         if (mainCamera == null)
         {
             Debug.LogError(
-                "Main Cameraが見つかりません。CameraのTagを確認してください。"
+                "Main Cameraが見つかりません。" +
+                "CameraのTagを確認してください。",
+                gameObject
             );
         }
 
-        defaultPosition = transform.position;
+        if (animationStateController == null)
+        {
+            animationStateController =
+                GetComponentInChildren
+                <AnimationStateController>(true);
+        }
+
+        if (animationStateController == null)
+        {
+            Debug.LogError(
+                gameObject.name +
+                "にAnimationStateControllerがありません",
+                gameObject
+            );
+        }
+
+        if (soundManager == null)
+        {
+            soundManager =
+                FindFirstObjectByType<SoundManager>();
+        }
     }
 
     private void Start()
     {
+        UpdateLitersText();
         UpdateLiquidAnimation();
     }
 
     private void Update()
     {
-        if(!CanDrag)
+        if (!CanDrag)
         {
             return;
         }
 
-        if (mainCamera == null || Mouse.current == null)
+        if (mainCamera == null ||
+            Mouse.current == null)
         {
             return;
         }
 
-        if (Mouse.current.leftButton.wasPressedThisFrame)
+        if (Mouse.current.leftButton
+            .wasPressedThisFrame)
         {
             StartDragging();
         }
 
-        if (isDragging && Mouse.current.leftButton.isPressed)
+        if (isDragging &&
+            Mouse.current.leftButton.isPressed)
         {
             Drag();
         }
 
-        if (Mouse.current.leftButton.wasReleasedThisFrame)
+        if (Mouse.current.leftButton
+            .wasReleasedThisFrame)
         {
             StopDragging();
         }
-
-        currentLitersText.text = currentLiters.ToString("F2") + " L";
     }
 
     private void StartDragging()
     {
-        Vector2 mousePosition = GetMouseWorldPosition();
+        Vector2 mousePosition =
+            GetMouseWorldPosition();
 
         Collider2D[] hits =
-            Physics2D.OverlapPointAll(mousePosition);
+            Physics2D.OverlapPointAll(
+                mousePosition
+            );
 
         foreach (Collider2D hit in hits)
         {
-            Debug.Log("検出: " + hit.gameObject.name);
-
             if (hit.transform == transform ||
                 hit.transform.IsChildOf(transform))
             {
@@ -100,7 +137,11 @@ public class Cup : MonoBehaviour
                     transform.position -
                     (Vector3)mousePosition;
 
-                Debug.Log("ドラッグ開始");
+                Debug.Log(
+                    gameObject.name +
+                    "のドラッグ開始"
+                );
+
                 return;
             }
         }
@@ -108,14 +149,18 @@ public class Cup : MonoBehaviour
 
     private void Drag()
     {
-        Vector2 mousePosition = GetMouseWorldPosition();
+        Vector2 mousePosition =
+            GetMouseWorldPosition();
 
         Vector3 newPosition =
-            (Vector3)mousePosition + dragOffset;
+            (Vector3)mousePosition +
+            dragOffset;
 
-        newPosition.z = transform.position.z;
+        newPosition.z =
+            transform.position.z;
 
-        transform.position = newPosition;
+        transform.position =
+            newPosition;
     }
 
     private void StopDragging()
@@ -127,7 +172,8 @@ public class Cup : MonoBehaviour
 
         isDragging = false;
 
-        Cup targetCup = FindTargetCup();
+        Cup targetCup =
+            FindTargetCup();
 
         if (targetCup != null)
         {
@@ -140,20 +186,29 @@ public class Cup : MonoBehaviour
         }
         else
         {
-            Debug.Log("移動先のコップがありません");
+            Debug.Log(
+                "移動先のコップがありません"
+            );
         }
 
-        transform.position = defaultPosition;
+        transform.position =
+            defaultPosition;
 
-        Debug.Log("ドラッグ終了");
+        Debug.Log(
+            gameObject.name +
+            "のドラッグ終了"
+        );
     }
 
     private Cup FindTargetCup()
     {
-        Vector2 worldPosition = GetMouseWorldPosition();
+        Vector2 worldPosition =
+            GetMouseWorldPosition();
 
         Collider2D[] hits =
-            Physics2D.OverlapPointAll(worldPosition);
+            Physics2D.OverlapPointAll(
+                worldPosition
+            );
 
         foreach (Collider2D hit in hits)
         {
@@ -182,7 +237,9 @@ public class Cup : MonoBehaviour
             Mouse.current.position.ReadValue();
 
         Vector3 worldPosition =
-            mainCamera.ScreenToWorldPoint(screenPosition);
+            mainCamera.ScreenToWorldPoint(
+                screenPosition
+            );
 
         return new Vector2(
             worldPosition.x,
@@ -192,59 +249,75 @@ public class Cup : MonoBehaviour
 
     public void PourInto(Cup targetCup)
     {
-        if (targetCup == null || targetCup == this)
+        if (targetCup == null ||
+            targetCup == this)
         {
             return;
         }
 
-        float transferableAmount = Mathf.Min(
-            currentLiters,
-            targetCup.FreeSpaceLiters
-        );
+        float transferableAmount =
+            Mathf.Min(
+                currentLiters,
+                targetCup.FreeSpaceLiters
+            );
 
         if (transferableAmount <= 0f)
         {
-            Debug.Log("液体を移せません");
+            Debug.Log(
+                "液体を移せません"
+            );
+
             return;
         }
 
-        currentLiters -= transferableAmount;
-        targetCup.currentLiters += transferableAmount;
+        currentLiters -=
+            transferableAmount;
+
+        targetCup.currentLiters +=
+            transferableAmount;
+
+        UpdateLitersText();
+        targetCup.UpdateLitersText();
+
         UpdateLiquidAnimation();
         targetCup.UpdateLiquidAnimation();
-        soundManager.PlayPourSE();
+
+        if (soundManager != null)
+        {
+            soundManager.PlayPourSE();
+        }
 
         Debug.Log(
-            transferableAmount + "L移しました"
+            transferableAmount +
+            "L移しました"
         );
 
         Debug.Log(
             gameObject.name +
             "の残量: " +
-            currentLiters +
+            currentLiters.ToString("F2") +
             "L"
         );
 
         Debug.Log(
             targetCup.gameObject.name +
             "の残量: " +
-            targetCup.currentLiters +
+            targetCup.currentLiters
+                .ToString("F2") +
             "L"
         );
     }
 
-    private void OnValidate()
+    private void UpdateLitersText()
     {
-        capacityLiters = Mathf.Max(
-            0f,
-            capacityLiters
-        );
+        if (currentLitersText == null)
+        {
+            return;
+        }
 
-        currentLiters = Mathf.Clamp(
-            currentLiters,
-            0f,
-            capacityLiters
-        );
+        currentLitersText.text =
+            currentLiters.ToString("F2") +
+            " L";
     }
 
     private void UpdateLiquidAnimation()
@@ -254,8 +327,33 @@ public class Cup : MonoBehaviour
             return;
         }
 
-        int stateNumber = Mathf.Clamp(Mathf.RoundToInt(currentLiters),0,8);
+        int liters =
+            Mathf.Clamp(
+                Mathf.RoundToInt(
+                    currentLiters
+                ),
+                0,
+                10
+            );
 
-        animationStateController.ChangeState(stateNumber);
+        animationStateController
+            .ChangeState(liters);
+    }
+
+    private void OnValidate()
+    {
+        capacityLiters =
+            Mathf.Clamp(
+                capacityLiters,
+                0f,
+                10f
+            );
+
+        currentLiters =
+            Mathf.Clamp(
+                currentLiters,
+                0f,
+                capacityLiters
+            );
     }
 }

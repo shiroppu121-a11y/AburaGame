@@ -19,6 +19,9 @@ public class MainManager : MonoBehaviour
     private TMP_Text remainingTimeText;
 
     [SerializeField]
+    private TMP_Text timeText;
+
+    [SerializeField]
     private GameObject timeUpUI;
 
     [Header("画面")]
@@ -62,12 +65,26 @@ public class MainManager : MonoBehaviour
     [SerializeField]
     private float sceneChangeDelay = 0.2f;
 
+    [Header("開始画面を表示するシーン")]
+
+    [SerializeField]
+    private string introSceneName = "FirstStage";
+
     private float remainingTime;
 
     private bool isGameStarted;
     private bool isStageCleared;
     private bool isTimeUp;
     private bool isLoadingNextStage;
+    private bool isCountRunning;
+
+    private double stageStartTime;
+
+    /*
+     * staticなのでシーンを切り替えても値が維持される。
+     */
+    private static double totalElapsedTime;
+    private static bool hasRunStarted;
 
     private void Start()
     {
@@ -75,23 +92,63 @@ public class MainManager : MonoBehaviour
         isStageCleared = false;
         isTimeUp = false;
         isLoadingNextStage = false;
+        isCountRunning = false;
 
-        remainingTime = timeLimit;
+        InitializePanels();
+        InitializeTimer();
+        CheckArrayLength();
 
+        bool shouldShowIntro =
+            SceneManager.GetActiveScene().name ==
+            introSceneName;
+
+        if (introPanel != null)
+        {
+            introPanel.SetActive(shouldShowIntro);
+        }
+
+        /*
+         * 最初のステージ以外では、
+         * シーン開始と同時に計測を再開する。
+         */
+        if (!shouldShowIntro)
+        {
+            StartGame();
+        }
+    }
+
+    private void InitializePanels()
+    {
         if (stageClearUI != null)
         {
             stageClearUI.SetActive(false);
-        }
-
-        if (introPanel != null && nextSceneName == "SecondStage")
-        {
-            introPanel.SetActive(true);
         }
 
         if (timeUpUI != null)
         {
             timeUpUI.SetActive(false);
         }
+
+        if (hintPanel != null)
+        {
+            hintPanel.SetActive(false);
+        }
+
+        if (allClearPanel != null)
+        {
+            allClearPanel.SetActive(false);
+        }
+
+        if (hintButton != null)
+        {
+            hintButton.SetActive(true);
+        }
+    }
+
+    private void InitializeTimer()
+    {
+        timeLimit = Mathf.Max(timeLimit, 0f);
+        remainingTime = timeLimit;
 
         if (timeSlider != null)
         {
@@ -102,7 +159,6 @@ public class MainManager : MonoBehaviour
         }
 
         UpdateTimerDisplay();
-        CheckArrayLength();
     }
 
     private void Update()
@@ -142,7 +198,27 @@ public class MainManager : MonoBehaviour
             return;
         }
 
+        bool isFirstStage =
+            SceneManager.GetActiveScene().name ==
+            introSceneName;
+
+        /*
+         * ゲーム全体を最初に開始したときだけ、
+         * 合計時間を0へ戻す。
+         *
+         * リスタートした場合はhasRunStartedがtrueなので、
+         * それまでの時間は維持される。
+         */
+        if (isFirstStage && !hasRunStarted)
+        {
+            totalElapsedTime = 0.0;
+            hasRunStarted = true;
+        }
+
         isGameStarted = true;
+
+        StartTimeCount();
+        SetCupOperationEnabled(true);
 
         if (introPanel != null)
         {
@@ -155,13 +231,59 @@ public class MainManager : MonoBehaviour
             soundManager.PlayBGM();
         }
 
-        Debug.Log("Game Start!");
+        Debug.Log(
+            "Game Start! 現在の合計時間: " +
+            totalElapsedTime.ToString("F2") +
+            "秒"
+        );
+    }
+
+    private void StartTimeCount()
+    {
+        if (isCountRunning)
+        {
+            return;
+        }
+
+        isCountRunning = true;
+
+        stageStartTime =
+            Time.realtimeSinceStartupAsDouble;
+    }
+
+    private void StopTimeCount()
+    {
+        if (!isCountRunning)
+        {
+            return;
+        }
+
+        double currentTime =
+            Time.realtimeSinceStartupAsDouble;
+
+        double stageElapsedTime =
+            currentTime - stageStartTime;
+
+        totalElapsedTime += stageElapsedTime;
+        isCountRunning = false;
+
+        Debug.Log(
+            "今回の経過時間: " +
+            stageElapsedTime.ToString("F2") +
+            "秒 / 合計: " +
+            totalElapsedTime.ToString("F2") +
+            "秒"
+        );
     }
 
     private void UpdateTimer()
     {
         remainingTime -= Time.deltaTime;
-        remainingTime = Mathf.Max(remainingTime, 0f);
+
+        remainingTime = Mathf.Max(
+            remainingTime,
+            0f
+        );
 
         UpdateTimerDisplay();
 
@@ -198,8 +320,15 @@ public class MainManager : MonoBehaviour
         isTimeUp = true;
         remainingTime = 0f;
 
+        /*
+         * 時間切れになるまでの時間も、
+         * 合計クリアタイムへ加算する。
+         */
+        StopTimeCount();
+
         UpdateTimerDisplay();
         SetCupOperationEnabled(false);
+        HideHint();
 
         if (timeUpUI != null)
         {
@@ -212,7 +341,11 @@ public class MainManager : MonoBehaviour
             soundManager.StopSE();
         }
 
-        Debug.Log("Time Up!");
+        Debug.Log(
+            "Time Up! 合計時間: " +
+            totalElapsedTime.ToString("F2") +
+            "秒"
+        );
     }
 
     private void CheckStageClearCondition()
@@ -222,7 +355,8 @@ public class MainManager : MonoBehaviour
             return;
         }
 
-        if (cups.Length == 0 || cups.Length != targetLiquids.Length)
+        if (cups.Length == 0 ||
+            cups.Length != targetLiquids.Length)
         {
             return;
         }
@@ -234,7 +368,10 @@ public class MainManager : MonoBehaviour
                 return;
             }
 
-            float difference = Mathf.Abs(cups[i].CurrentLiters - targetLiquids[i]);
+            float difference = Mathf.Abs(
+                cups[i].CurrentLiters -
+                targetLiquids[i]
+            );
 
             if (difference > tolerance)
             {
@@ -242,15 +379,15 @@ public class MainManager : MonoBehaviour
             }
         }
 
+        HideHint();
+
         if (string.IsNullOrEmpty(nextSceneName))
         {
             AllClear();
-            HideHint();
         }
         else
         {
             StageClear();
-            HideHint();
         }
     }
 
@@ -263,6 +400,11 @@ public class MainManager : MonoBehaviour
 
         isStageCleared = true;
 
+        /*
+         * このステージで操作していた時間を
+         * 合計へ追加する。
+         */
+        StopTimeCount();
         SetCupOperationEnabled(false);
 
         if (stageClearUI != null)
@@ -277,7 +419,72 @@ public class MainManager : MonoBehaviour
             soundManager.PlayStageClearSE();
         }
 
-        Debug.Log("Stage Clear!");
+        Debug.Log(
+            "Stage Clear! 合計時間: " +
+            totalElapsedTime.ToString("F2") +
+            "秒"
+        );
+    }
+
+    private void AllClear()
+    {
+        if (isStageCleared)
+        {
+            return;
+        }
+
+        isStageCleared = true;
+
+        /*
+         * 最後のステージで操作していた時間を
+         * 合計へ追加する。
+         */
+        StopTimeCount();
+        SetCupOperationEnabled(false);
+
+        if (allClearPanel != null)
+        {
+            allClearPanel.SetActive(true);
+        }
+
+        if (timeText != null)
+        {
+            timeText.text =
+                "Time: " +
+                FormatElapsedTime(totalElapsedTime);
+        }
+
+        if (soundManager != null)
+        {
+            soundManager.StopBGM();
+            soundManager.StopSE();
+            soundManager.PlayAllClearSE();
+        }
+
+        Debug.Log(
+            "All Clear! 合計時間: " +
+            totalElapsedTime.ToString("F2") +
+            "秒"
+        );
+    }
+
+    private string FormatElapsedTime(
+        double elapsedTime
+    )
+    {
+        int minutes =
+            Mathf.FloorToInt(
+                (float)elapsedTime / 60f
+            );
+
+        double seconds =
+            elapsedTime % 60.0;
+
+        return string.Format(
+            "{0:00}:{1:00.00}",
+            minutes,
+            seconds
+        );
     }
 
     public void LoadNextStage()
@@ -322,42 +529,40 @@ public class MainManager : MonoBehaviour
         SceneManager.LoadScene(nextSceneName);
     }
 
-    private void AllClear()
+    public void Restart()
     {
-        if (isStageCleared)
-        {
-            return;
-        }
+        /*
+         * リスタートを押すまでの時間を
+         * 合計へ追加してから再読み込みする。
+         *
+         * TimeUpで既に停止済みの場合は、
+         * StopTimeCount内の判定によって
+         * 二重加算されない。
+         */
+        StopTimeCount();
 
-        isStageCleared = true;
+        string currentSceneName =
+            SceneManager.GetActiveScene().name;
 
-        SetCupOperationEnabled(false);
-
-        if (allClearPanel != null)
-        {
-            allClearPanel.SetActive(true);
-        }
-
-        if (soundManager != null)
-        {
-            soundManager.StopBGM();
-            soundManager.StopSE();
-            soundManager.PlayStageClearSE();
-        }
-
-        soundManager.PlayAllClearSE();
-
-        Debug.Log("All Clear!");
+        SceneManager.LoadScene(
+            currentSceneName
+        );
     }
 
     public void BackTitle()
     {
-        SceneManager.LoadScene("FirstStage");
-    }
+        StopTimeCount();
 
-    public void Restart()
-    {
-        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+        /*
+         * タイトルへ戻る場合は、
+         * 現在の挑戦を終了してタイムをリセットする。
+         */
+        totalElapsedTime = 0.0;
+        hasRunStarted = false;
+
+        SceneManager.LoadScene(
+            introSceneName
+        );
     }
 
     private void SetCupOperationEnabled(
@@ -383,7 +588,8 @@ public class MainManager : MonoBehaviour
         if (cups == null || targetLiquids == null)
         {
             Debug.LogError(
-                "CupsまたはTarget Liquidsが設定されていません。"
+                "CupsまたはTarget Liquidsが" +
+                "設定されていません。"
             );
 
             return;
@@ -392,24 +598,45 @@ public class MainManager : MonoBehaviour
         if (cups.Length != targetLiquids.Length)
         {
             Debug.LogError(
-                "CupsとTarget Liquidsの要素数を合わせてください。"
+                "CupsとTarget Liquidsの" +
+                "要素数を合わせてください。"
             );
         }
     }
 
     public void ShowHint()
     {
-        hintPanel.SetActive(true);
-        soundManager.PlayHintSE();
+        if (isStageCleared || isTimeUp)
+        {
+            return;
+        }
+
+        if (hintPanel != null)
+        {
+            hintPanel.SetActive(true);
+        }
+
+        if (soundManager != null)
+        {
+            soundManager.PlayHintSE();
+        }
     }
 
     public void CloseHint()
     {
-        hintPanel.SetActive(false);
+        if (hintPanel != null)
+        {
+            hintPanel.SetActive(false);
+        }
     }
 
     private void HideHint()
     {
+        if (hintPanel != null)
+        {
+            hintPanel.SetActive(false);
+        }
+
         if (hintButton != null)
         {
             hintButton.SetActive(false);
